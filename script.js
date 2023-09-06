@@ -1,20 +1,14 @@
+const Player = (name, mark) => {
+    return {name, mark}
+};
+
 const Cell = () => {
 
     let value = '';
 
-    const addMark = (player) => {
-        if (value == '') {
-            value = player.mark
-        }
-    };
+    const getValue = () => {return value};
 
-    const getValue = () => {value};
-
-    return {addMark, getValue};
-};
-
-const Player = (name, mark) => {
-    return {name, mark}
+    return {getValue};
 };
 
 const GameBoard = (() => {
@@ -29,14 +23,24 @@ const GameBoard = (() => {
         }
     }
 
-    const getBoard = () => board;
+    const getBoard = () => {return board};
+
+    const addMark = (row, column, Player) => {
+        if (board[row][column] == '') {
+            board[row][column].addToken(Player);
+        }
+    };
 
     const printBoard = () => {
-        const boardWithMarks = board.map((row) => row.map((cell) => cell.getValue()))
+        const boardWithMarks = board.map(function(row) {
+            return row.map(function(cell) {
+                return cell.getValue();
+            })
+        });
         console.log(boardWithMarks);
     }
 
-    return {getBoard, printBoard};
+    return {getBoard, printBoard, addMark};
 })();
 
 const DisplayController = (() => {
@@ -44,6 +48,33 @@ const DisplayController = (() => {
     const board = GameBoard;
     const players = [Player("Player one", "X"),
                     Player("Player two", "O")];
+
+    let activePlayer = players[0];
+
+    const switchPlayerTurn = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    };
+
+    const getActivePlayer = () => activePlayer;
+
+    const printNewRound = () => {
+        board.printBoard();
+        console.log(`${getActivePlayer().name}'s turn`);
+    };
+
+    const playRound = (row, column) => {
+        console.log(`${getActivePlayer().name} made mark at row ${row} and column ${column}`);
+        board.getBoard()
+        board.addMark(row, column, getActivePlayer())
+        console.log(board.getBoard())
+
+        switchPlayerTurn();
+        printNewRound();
+    }
+
+    printNewRound();
+
+    return {getActivePlayer, playRound};
 })();
 
-console.log(GameBoard.getBoard())
+const game = DisplayController
