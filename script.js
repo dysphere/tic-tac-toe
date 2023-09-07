@@ -1,14 +1,16 @@
 const Player = (name, mark) => {
-    return {name, mark}
+    return {name, mark};
 };
 
 const Cell = () => {
 
-    let value = '';
+    let value = 0;
 
-    const getValue = () => {return value};
+    const changeValue = (mark) => {
+        value = mark;
+    }
 
-    return {getValue};
+    return {changeValue, value};
 };
 
 const GameBoard = (() => {
@@ -25,22 +27,16 @@ const GameBoard = (() => {
 
     const getBoard = () => {return board};
 
-    const addMark = (row, column, Player) => {
-        if (board[row][column] == '') {
-            board[row][column].addToken(Player);
-        }
-    };
-
     const printBoard = () => {
         const boardWithMarks = board.map(function(row) {
             return row.map(function(cell) {
-                return cell.getValue();
+                return cell.value;
             })
         });
         console.log(boardWithMarks);
     }
 
-    return {getBoard, printBoard, addMark};
+    return {getBoard, printBoard};
 })();
 
 const DisplayController = (() => {
@@ -62,11 +58,14 @@ const DisplayController = (() => {
         console.log(`${getActivePlayer().name}'s turn`);
     };
 
+    const makeMark = (row, column) => {
+        board.getBoard()[row][column].value = getActivePlayer().mark;
+    }
+
     const playRound = (row, column) => {
         console.log(`${getActivePlayer().name} made mark at row ${row} and column ${column}`);
-        board.getBoard()
-        board.addMark(row, column, getActivePlayer())
-        console.log(board.getBoard())
+        board.getBoard();
+        makeMark(row, column);
 
         switchPlayerTurn();
         printNewRound();
