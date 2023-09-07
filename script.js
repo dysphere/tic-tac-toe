@@ -59,7 +59,8 @@ const DisplayController = (() => {
     };
 
     const makeMark = (row, column) => {
-        board.getBoard()[row][column].value = getActivePlayer().mark;
+        if (board.getBoard()[row][column].value == 0)
+         board.getBoard()[row][column].value = getActivePlayer().mark;
     }
 
     const playRound = (row, column) => {
