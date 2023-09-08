@@ -39,7 +39,7 @@ const GameBoard = (() => {
     return {getBoard, printBoard};
 })();
 
-const DisplayController = (() => {
+const GameController = (() => {
 
     const board = GameBoard;
     const players = [Player("Player one", "X"),
@@ -74,7 +74,37 @@ const DisplayController = (() => {
 
     printNewRound();
 
-    return {getActivePlayer, playRound};
+    return {getActivePlayer, playRound,
+            getBoard: board.getBoard};
 })();
 
-const game = DisplayController
+const DisplayController = (() => {
+    const boardDiv = document.querySelector(".board");
+    const playerTurn = document.querySelector(".turn");
+    const game = GameController
+
+    const updateScreen = () => {
+        const board = game.getBoard();
+        const player = game.getActivePlayer();
+
+        playerTurn.textContent = `${player.name}'s turn`
+
+        board.forEach((row, j) => {
+            const rowDiv = document.createElement("div");
+            row.forEach((cell, index) => {
+                const cellButton = document.createElement('button');
+                cellButton.setAttribute("class", "cell");
+                if (cell.value != 0) {
+                    cellButton.textContent = cell.value
+                }
+                cellButton.dataset.column = index
+                rowDiv.appendChild(cellButton);
+            })
+            boardDiv.appendChild(rowDiv);
+        })
+    }
+
+    updateScreen();
+})();
+
+const game = GameController
