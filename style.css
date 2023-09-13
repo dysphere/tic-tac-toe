@@ -1,7 +1,12 @@
-button {
+.cell {
     width: 50px;
     height: 50px;
     background-color: white;
+}
+
+.new {
+    width: 50px;
+    margin-bottom: 20px;
 }
 
 .board {
@@ -12,5 +17,4 @@ button {
 
 .container {
     display: grid;
-    grid-template-rows: 75px 200px;
 }

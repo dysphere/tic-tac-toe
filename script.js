@@ -35,8 +35,17 @@ const GameBoard = (() => {
         });
         console.log(boardWithMarks);
     }
+    
+    const newBoard = () => {
+        const emptyBoard = board.map(function(row) {
+            return row.map(function(cell) {
+                cell.value = 0;
+            })
+        });
+        return emptyBoard;
+    }
 
-    return {getBoard, printBoard};
+    return {getBoard, printBoard, newBoard};
 })();
 
 const GameController = (() => {
@@ -93,17 +102,19 @@ const GameController = (() => {
         console.log(`${getActivePlayer().name} made mark at row ${row} and column ${column}`);
         board.getBoard();
         makeMark(row, column);
-        console.log(checkWinner())
-        checkWinner();
-
+        if (checkWinner() == true) {
+            console.log(`${getActivePlayer().name} has won`);
+        }
+        else {
         switchPlayerTurn();
-        printNewRound();
+        printNewRound(); }
     }
 
     printNewRound();
 
     return {getActivePlayer, playRound,
-            getBoard: board.getBoard};
+            getBoard: board.getBoard, checkWinner, players,
+            activePlayer, switchPlayerTurn};
 })();
 
 const DisplayController = (() => {
@@ -140,11 +151,47 @@ const DisplayController = (() => {
             button.addEventListener('click', () => {
                 let column = button.dataset.row
                 let row = button.parentElement.dataset.column
+                const win = document.querySelector(".winner")
                 game.playRound(row, column);
+                if (game.checkWinner() == true) {
+                    win.textContent = `${player.name} has won`
+                }
                 updateScreen();
             });
         });
     }
+
+    const newDialog = document.querySelector("#players");
+    const playerone = newDialog.querySelector("#playerone");
+    const playertwo = newDialog.querySelector("#playertwo");
+    const submit = newDialog.querySelector(".submit");
+    const newButton = document.querySelector(".new");
+    newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        newDialog.showModal();
+    })
+
+    playerone.addEventListener('change', () => {
+        GameController.players[0].name = playerone.value
+    })
+
+    playertwo.addEventListener('change', () => {
+        GameController.players[1].name = playertwo.value
+    })
+
+    submit.addEventListener('click', () => {
+        newDialog.close();
+        GameController.activePlayer = GameController.players[0]
+        GameBoard.newBoard();
+        console.log(GameController.activePlayer)
+        if (GameController.getActivePlayer() === GameController.players[1]) {
+            GameController.switchPlayerTurn();
+        }
+        updateScreen();
+        playerone.value = ""
+        playertwo.value = ""
+
+    })
 
     updateScreen();
 })();

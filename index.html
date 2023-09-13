@@ -10,7 +10,22 @@
 <body>
     <div class="container">
         <h1 class="turn"></h1>
+        <button class="new" type="button">New Game</button>
         <div class="board"></div>
+        <h2 class="winner"></h2>
+        <dialog id="players">
+            <form method="dialog">
+                <div class="player">
+                    <label for="playerone">Player one name</label>
+                    <input type="text" name="playerone" id="playerone">
+                </div>
+                <div class="player">
+                    <label for="playertwo">Player two name</label>
+                    <input type="text" name="playertwo" id="playertwo">
+                </div>
+                <button class="submit" type="button">Submit names</button>
+            </form>
+        </dialog>
     </div>
 </body>
 </html>
